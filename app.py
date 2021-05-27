@@ -1,6 +1,7 @@
 from flask import Flask, request
 from flask_cors import CORS
 import sqlite3
+import json
 
 port = 5000
 app = Flask(__name__)
@@ -25,16 +26,27 @@ def respond():
 
 @app.route("/searchbyname/<business_name>", methods=["GET"])
 def search(business_name):
-    conn = sqlite3.connect("MOCdb.db")
+    conn = sqlite3.connect("./MOCdb.db")
     cursor = conn.cursor()
     sql_command = """SELECT * FROM business_info WHERE business_name = ?;"""
     values = (str(business_name),)
+
     cursor.execute(sql_command, values)
+
+    row_headers = [x[0] for x in cursor.description] # Get all the column names in the db
+
     results = cursor.fetchall()
+
+    json_response = []
+
+
+    for row in results:
+        json_response.append(dict(zip(row_headers, row))) # Create dictionaries combining row_headers with real data
+
     conn.commit()
     conn.close()
-    print(results)
-    return list(results)
+    print(json_response)
+    return json.dumps(json_response)
 
 if __name__ == "__main__":
     app.run(port=port)
