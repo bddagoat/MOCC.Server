@@ -23,12 +23,12 @@ def respond():
     conn.close()
     return "ok"
 
-@app.route("/", methods=["GET"])
-def search():
+@app.route("/searchbyname/<business_name>", methods=["GET"])
+def search(business_name):
     conn = sqlite3.connect("MOCdb.db")
     cursor = conn.cursor()
     sql_command = """SELECT * FROM business_info WHERE business_name = ?;"""
-    values = (request.form["name"],)
+    values = (str(business_name),)
     cursor.execute(sql_command, values)
     results = cursor.fetchall()
     conn.commit()
