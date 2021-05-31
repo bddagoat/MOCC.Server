@@ -12,24 +12,21 @@ CORS(app)
 def respond():
     conn = sqlite3.connect("MOCdb.db")
     cursor = conn.cursor()
-    sql_command = """INSERT INTO business_info (first, last, birthday, business_name, business_address, contact, email, state, city, zip,
-    specialization, experience, website_link) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
-    values = (request.form["firstName"], request.form["lastName"], request.form["birthday"],
-              request.form["BusName"], request.form["address"], request.form["number"], request.form["email"],
-              request.form["state"], request.form["city"], request.form["zip"], request.form["dropdown"],
-              request.form["experience"], request.form["weblink"])
+    sql_command = """INSERT INTO business_info (business_name, state, city, zip,
+    specialization) VALUES (?, ?, ?, ?, ?);"""
+
+    values = (request.form["BusName"], request.form["state"], request.form["city"], request.form["zip"], request.form["dropdown"])
     cursor.execute(sql_command, values)
-    print(request.form)
     conn.commit()
     conn.close()
-    return "ok"
+    return "Ok"
 
 @app.route("/searchbyname/<business_name>", methods=["GET"])
 def search(business_name):
     conn = sqlite3.connect("./MOCdb.db")
     cursor = conn.cursor()
-    sql_command = """SELECT * FROM business_info WHERE business_name = ?;"""
-    values = (str(business_name),)
+    sql_command = """SELECT * FROM business_info WHERE business_name LIKE ?;"""
+    values = (f'%{str(business_name)}%',)
 
     cursor.execute(sql_command, values)
 
@@ -45,7 +42,7 @@ def search(business_name):
 
     conn.commit()
     conn.close()
-    print(json_response)
+    print(f'found {len(json_response)} match{"" if len(json_response) == 1 else "es"} for "{business_name}"')
     return json.dumps(json_response)
 
 if __name__ == "__main__":
