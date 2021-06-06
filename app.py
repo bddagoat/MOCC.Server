@@ -12,10 +12,11 @@ CORS(app)
 def respond():
     conn = sqlite3.connect("MOCdb.db")
     cursor = conn.cursor()
-    sql_command = """INSERT INTO business_info (business_name, state, city, zip,
-    specialization) VALUES (?, ?, ?, ?, ?);"""
+    sql_command = """INSERT INTO business_info (first, last, birthday, business_name, business_address, contact, email, state, city, zip,
+    specialization, experience, ownership, website_link) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
 
-    values = (request.form["BusName"], request.form["state"], request.form["city"], request.form["zip"], request.form["dropdown"])
+    values = (request.form["first-name"], request.form["last-name"], request.form["birthday"], request.form["BusName"], request.form["address"], request.form["phone-number"], request.form["email"], request.form["state"], request.form["city"], request.form["zip"], request.form["dropdown"], request.form["experience"], request.form["ownership"], request.form["website-link"] )
+    print(values)
     cursor.execute(sql_command, values)
     conn.commit()
     conn.close()
