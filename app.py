@@ -1,26 +1,69 @@
+import re
 from flask import Flask, request
+# from flask import SQLAlchemy
+from flask import jsonify
 from flask_cors import CORS
 import sqlite3
 import json
+import time
 
 port = 5000
 app = Flask(__name__)
 CORS(app)
 
 # endpoints that take the user to this point of the directory
+# inserts account info into database
 @app.route("/", methods=["POST"])
 def respond():
     conn = sqlite3.connect("MOCdb.db")
     cursor = conn.cursor()
     sql_command = """INSERT INTO business_info (first, last, birthday, business_name, business_address, contact, email, state, city, zip,
-    specialization, experience, ownership, website_link) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
+    specialization, ownership, hire, website_link, mission_statement) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
 
-    values = (request.form["first-name"], request.form["last-name"], request.form["birthday"], request.form["BusName"], request.form["address"], request.form["phone-number"], request.form["email"], request.form["state"], request.form["city"], request.form["zip"], request.form["dropdown"], request.form["experience"], request.form["ownership"], request.form["website-link"] )
+    values = (request.get_json()["first"], request.get_json()["last"], request.get_json()["birthday"], request.get_json()["business_name"], request.get_json()["business_address"], request.get_json()["contact"], request.get_json()["email"], request.get_json()["password"], request.get_json()["state"], request.get_json()["city"], request.get_json()["zip"], request.get_json()["specialization"], request.get_json()["ownership"], request.get_json()["hire"], request.get_json()["website_link"], request.get_json()["mission_statement"])
     print(values)
     cursor.execute(sql_command, values)
     conn.commit()
     conn.close()
-    return "Ok"
+    return {'message': "Ok"}
+    # json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+
+@app.route("/", methods=["POST"])
+def respond(): 
+    conn = sqlite3.connect("MOCdb.db")
+    cursor = conn.cursor()
+    sql_command = """INSERT INTO prospect_info (first, last, birthday, email, education, state, city, bio, contact, password, website_link) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
+
+    values = (request.get_json()["first"], request.get_json()["last"], request.get_json()["birthday"], request.get_json()["email"], request.get_json()["education"], request.get_json()["state"], request.get_json()["city"], request.get_json()["bio"], request.get_json()["contact"], request.get_json()["password"], request.get_json["website_link"])
+    print(values)
+    cursor.execute(sql_command, values)
+    conn.commit()
+    conn.close()
+    return {'message': "Ok"}
+    # json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+  
+
+# init SQLAlchemy so we can use it later in our models
+# db = SQLAlchemy()
+
+# def create_app():
+#     app = Flask(__name__)
+
+#     app.config['SECRET_KEY'] = 'secret-key-goes-here'
+#     app.config['SQLALCHEMY_DATABASE_URI'] = 'MOCdb.db'
+
+#     db.init_app(app)
+
+#     # blueprint for auth routes in our app
+#     from flask_auth_app import flask_auth_app as flask_auth_app
+#     app.register_blueprint(flask_auth_app_blueprint)
+
+#     # blueprint for non-auth parts of app
+#     from .app import app as app_blueprint
+#     app.register_blueprint(app_blueprint)
+
+#     return app
+
 
 @app.route("/searchbyname/<business_name>", methods=["GET"])
 def search(business_name):
@@ -37,7 +80,6 @@ def search(business_name):
 
     json_response = []
 
-
     for row in results:
         json_response.append(dict(zip(row_headers, row))) # Create dictionaries combining row_headers with real data
 
@@ -45,7 +87,8 @@ def search(business_name):
     conn.close()
     print(f'found {len(json_response)} match{"" if len(json_response) == 1 else "es"} for "{business_name}"')
     return json.dumps(json_response)
-
+ 
 if __name__ == "__main__":
     app.run(port=port)
+
 
