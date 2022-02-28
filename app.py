@@ -28,7 +28,7 @@ def respond():
     return {'message': "Ok"}
     # json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
-@app.route("/", methods=["POST"])
+@app.route("/prospect", methods=["POST"])
 def respond(): 
     conn = sqlite3.connect("MOCdb.db")
     cursor = conn.cursor()
@@ -65,7 +65,7 @@ def respond():
 #     return app
 
 
-@app.route("/searchbyname/<business_name>", methods=["GET"])
+@app.route("/search/<business_name>", methods=["GET"])
 def search(business_name):
     conn = sqlite3.connect("./MOCdb.db")
     cursor = conn.cursor()
@@ -87,7 +87,30 @@ def search(business_name):
     conn.close()
     print(f'found {len(json_response)} match{"" if len(json_response) == 1 else "es"} for "{business_name}"')
     return json.dumps(json_response)
- 
+  
+@app.route("/prospect/<prospect>", methods=["GET"])
+def search(prospect):
+    conn = sqlite3.connect("./MOCdb.db")
+    cursor = conn.cursor()
+    sql_command = """SELECT * FROM prospect_info WHERE prospect LIKE ?;"""
+    value = (f'%{str(prospect)}%',)
+
+    cursor.execute(sql_command, value)
+    row_headers =  [x[0] for x in cursor.description] 
+
+    results = cursor.fetchall()
+
+    json_response = []
+
+    for row in results:
+        json_response.append(dict(zip(row_headers, row))) # Create dictionaries combining row_headers with real data
+
+    conn.commit()
+    conn.close()
+    print(f'found {len(json_response)} match{"" if len(json_response) == 1 else "es"} for "{prospect}"')
+    return json.dumps(json_response)
+
+
 if __name__ == "__main__":
     app.run(port=port)
 
