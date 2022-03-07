@@ -29,7 +29,7 @@ def respond():
     # json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 @app.route("/prospect", methods=["POST"])
-def respond(): 
+def responding(): 
     conn = sqlite3.connect("MOCdb.db")
     cursor = conn.cursor()
     sql_command = """INSERT INTO prospect_info (first, last, birthday, email, education, state, city, bio, contact, password, website_link) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
@@ -89,7 +89,7 @@ def search(business_name):
     return json.dumps(json_response)
   
 @app.route("/prospect/<prospect>", methods=["GET"])
-def search(prospect):
+def searchProspect(prospect):
     conn = sqlite3.connect("./MOCdb.db")
     cursor = conn.cursor()
     sql_command = """SELECT * FROM prospect_info WHERE prospect LIKE ?;"""
