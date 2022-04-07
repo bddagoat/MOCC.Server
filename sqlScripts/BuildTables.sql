@@ -13,7 +13,7 @@ CREATE TABLE "business_info" (
 	"email"	TEXT,
 	"state"	TEXT,
 	"city"	TEXT,
-	"zip"	INTEGER,
+	"zip"	TEXT,
 	"specialization"	TEXT,
 	"ownership"	TEXT,
 	"website_link"	TEXT,
@@ -22,6 +22,7 @@ CREATE TABLE "business_info" (
 	"hire"	TEXT,
 	"password"	TEXT,
 	"rating"	INTEGER,
+	"profile"	TEXT,
 	PRIMARY KEY("first","last","business_name","rating","hire")
 );
 
@@ -38,7 +39,10 @@ CREATE TABLE "prospect_info" (
 	"status"	INTEGER,
 	"contact"	TEXT,
 	"password"	TEXT,
-	"website_link"	TEXT
+	"website_link"	TEXT,
+	"id"	INTEGER UNIQUE,
+	"specialization"	TEXT,
+	"profile"	TEXT,
 	PRIMARY KEY("specialization","first","last")
 );
 
@@ -58,5 +62,6 @@ CREATE TABLE "artist_producer" (
 	"portfolio"	TEXT,
 	"rating"	INTEGER,
 	"genre"	TEXT,
+	"profile"	TEXT,
 	PRIMARY KEY("first","last","rating","genre")
 );
