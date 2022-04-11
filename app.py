@@ -65,7 +65,7 @@ def responding():
 #     return app
 
 
-@app.route("/search/<business_name>", methods=["GET"])
+@app.route("/searchbyname/<business_name>", methods=["GET"])
 def search(business_name):
     conn = sqlite3.connect("./MOCdb.db")
     cursor = conn.cursor()
