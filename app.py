@@ -13,19 +13,41 @@ CORS(app)
 
 # endpoints that take the user to this point of the directory
 # inserts account info into database
-@app.route("/", methods=["POST"])
+@app.route("/create-profile", methods=["POST"])
 def respond():
     conn = sqlite3.connect("MOCdb.db")
     cursor = conn.cursor()
     sql_command = """INSERT INTO business_info (first, last, birthday, business_name, business_address, contact, email, state, city, zip,
-    specialization, ownership, hire, website_link, mission_statement) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
+    specialization, ownership, hire, website_link, mission_statement) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
 
-    values = (request.get_json()["first"], request.get_json()["last"], request.get_json()["birthday"], request.get_json()["business_name"], request.get_json()["business_address"], request.get_json()["contact"], request.get_json()["email"], request.get_json()["password"], request.get_json()["state"], request.get_json()["city"], request.get_json()["zip"], request.get_json()["specialization"], request.get_json()["ownership"], request.get_json()["hire"], request.get_json()["website_link"], request.get_json()["mission_statement"])
+    values = (request.get_json()["first"],
+              request.get_json()["last"], 
+              request.get_json()["birthday"], 
+              request.get_json()["business_name"], 
+              request.get_json()["business_address"], 
+              request.get_json()["contact"], 
+              request.get_json()["email"], 
+              request.get_json()["state"], 
+              request.get_json()["city"], 
+              request.get_json()["zip"], 
+              request.get_json()["specialization"], 
+              request.get_json()["ownership"], 
+              request.get_json()["hire"], 
+              request.get_json()["website_link"], 
+              request.get_json()["mission_statement"])
+
     print(values)
     cursor.execute(sql_command, values)
+    
+    sql_command = """SELECT * FROM business_info WHERE first = ? AND last = ? AND business_name = ?"""
+    values1 = (request.get_json()["first"], request.get_json()["last"], request.get_json()["business_name"])
+    cursor.execute(sql_command, values1)
+
+    business = cursor.fetchone()
     conn.commit()
     conn.close()
-    return {'message': "Ok"}
+    return json.dumps(business)
+    
     # json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 @app.route("/prospect", methods=["POST"])
