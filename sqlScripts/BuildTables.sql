@@ -23,7 +23,7 @@ CREATE TABLE "business_info" (
 	"password"	TEXT,
 	"rating"	INTEGER,
 	"profile"	TEXT,
-	PRIMARY KEY("first","last","business_name","rating","hire")
+	PRIMARY KEY("first","last","business_name")
 );
 
 DROP TABLE IF EXISTS prospect_info;
@@ -63,5 +63,5 @@ CREATE TABLE "artist_producer" (
 	"rating"	INTEGER,
 	"genre"	TEXT,
 	"profile"	TEXT,
-	PRIMARY KEY("first","last","rating","genre")
+	PRIMARY KEY("first","last","genre")
 );

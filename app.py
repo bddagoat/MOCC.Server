@@ -47,23 +47,71 @@ def respond():
     conn.commit()
     conn.close()
     return json.dumps(business)
-    
     # json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
-@app.route("/prospect", methods=["POST"])
+@app.route("/specialists", methods=["POST"])
 def responding(): 
     conn = sqlite3.connect("MOCdb.db")
     cursor = conn.cursor()
-    sql_command = """INSERT INTO prospect_info (first, last, birthday, email, education, state, city, bio, contact, password, website_link) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
+    sql_command = """INSERT INTO prospect_info (first, last, birthday, email, education, state, city, bio, contact, password, website_link, specialization, resume) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
 
-    values = (request.get_json()["first"], request.get_json()["last"], request.get_json()["birthday"], request.get_json()["email"], request.get_json()["education"], request.get_json()["state"], request.get_json()["city"], request.get_json()["bio"], request.get_json()["contact"], request.get_json()["password"], request.get_json["website_link"])
+    values = (request.get_json()["first"],
+              request.get_json()["last"],
+              request.get_json()["birthday"],
+              request.get_json()["email"], 
+              request.get_json()["education"], 
+              request.get_json()["state"], 
+              request.get_json()["city"],  
+              request.get_json()["bio"], 
+              request.get_json()["contact"], 
+              request.get_json()["password"], 
+              request.get_json["website_link"],
+              request.get_json()["specialization"],
+              request.get_json()["resume"])
     print(values)
     cursor.execute(sql_command, values)
+
+    sql_command = """SELECT * FROM prospect_info WHERE first = ? AND last = ? AND specialization = ?"""
+    values1 = (request.get_json()["first"], request.get_json()["last"], request.get_json["specialization"])
+    cursor.execute(sql_command, values1)
+
+    prospect = cursor.fetchone() 
     conn.commit()
     conn.close()
-    return {'message': "Ok"}
+    return json.dumps(prospect)
     # json.dumps({'success':True}), 200, {'ContentType':'application/json'}
-  
+
+
+@app.route("/artists", methods=["POST"])
+def responding(): 
+    conn = sqlite3.connect("MOCdb.db")
+    cursor = conn.cursor()
+    sql_command = """INSERT INTO artist_producer (first, last, birthday, email, state, city, portfolio, contact, password, website_link, genre, profile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
+
+    values = (request.get_json()["first"],
+              request.get_json()["last"],
+              request.get_json()["birthday"],
+              request.get_json()["email"], 
+              request.get_json()["state"], 
+              request.get_json()["city"],  
+              request.get_json()["portfolio"], 
+              request.get_json()["contact"], 
+              request.get_json()["password"], 
+              request.get_json()["website_link"],
+              request.get_json()["genre"],
+              request.get_json()["profile"])
+    print(values)
+    cursor.execute(sql_command, values)
+
+    sql_command = """SELECT * FROM artist_producer WHERE first = ? AND last = ? AND specialization = ?"""
+    values1 = (request.get_json()["first"], request.get_json()["last"], request.get_json["specialization"])
+    cursor.execute(sql_command, values1)
+
+    artist = cursor.fetchone() 
+    conn.commit()
+    conn.close()
+    return json.dumps(artist)
+
 
 # init SQLAlchemy so we can use it later in our models
 # db = SQLAlchemy()
@@ -110,7 +158,7 @@ def search(business_name):
     print(f'found {len(json_response)} match{"" if len(json_response) == 1 else "es"} for "{business_name}"')
     return json.dumps(json_response)
   
-@app.route("/prospect/<prospect>", methods=["GET"])
+@app.route("/specialists/<prospect>", methods=["GET"])
 def searchProspect(prospect):
     conn = sqlite3.connect("./MOCdb.db")
     cursor = conn.cursor()
@@ -130,6 +178,29 @@ def searchProspect(prospect):
     conn.commit()
     conn.close()
     print(f'found {len(json_response)} match{"" if len(json_response) == 1 else "es"} for "{prospect}"')
+    return json.dumps(json_response)
+
+
+@app.route("/artists/<artist>", methods=["GET"])
+def searchProspect(artist):
+    conn = sqlite3.connect("./MOCdb.db")
+    cursor = conn.cursor()
+    sql_command = """SELECT * FROM artist_producer WHERE artist LIKE ?;"""
+    value = (f'%{str(artist)}%',)
+
+    cursor.execute(sql_command, value)
+    row_headers =  [x[0] for x in cursor.description] 
+
+    results = cursor.fetchall()
+
+    json_response = []
+
+    for row in results:
+        json_response.append(dict(zip(row_headers, row))) # Create dictionaries combining row_headers with real data
+
+    conn.commit()
+    conn.close()
+    print(f'found {len(json_response)} match{"" if len(json_response) == 1 else "es"} for "{artist}"')
     return json.dumps(json_response)
 
 
