@@ -49,7 +49,7 @@ def respond():
     return json.dumps(business)
     # json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
-@app.route("/specialists", methods=["POST"])
+@app.route("/specalists", methods=["POST"])
 def responding(): 
     conn = sqlite3.connect("MOCdb.db")
     cursor = conn.cursor()
@@ -82,7 +82,7 @@ def responding():
     # json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 
-@app.route("/artists", methods=["POST"])
+@app.route("/artist", methods=["POST"])
 def responding(): 
     conn = sqlite3.connect("MOCdb.db")
     cursor = conn.cursor()
@@ -135,6 +135,8 @@ def responding():
 #     return app
 
 
+
+# displays the database data to the search engine
 @app.route("/searchbyname/<business_name>", methods=["GET"])
 def search(business_name):
     conn = sqlite3.connect("./MOCdb.db")
@@ -158,7 +160,7 @@ def search(business_name):
     print(f'found {len(json_response)} match{"" if len(json_response) == 1 else "es"} for "{business_name}"')
     return json.dumps(json_response)
   
-@app.route("/specialists/<prospect>", methods=["GET"])
+@app.route("/specalists/<prospect>", methods=["GET"])
 def searchProspect(prospect):
     conn = sqlite3.connect("./MOCdb.db")
     cursor = conn.cursor()
@@ -181,7 +183,7 @@ def searchProspect(prospect):
     return json.dumps(json_response)
 
 
-@app.route("/artists/<artist>", methods=["GET"])
+@app.route("/artist/<artist>", methods=["GET"])
 def searchProspect(artist):
     conn = sqlite3.connect("./MOCdb.db")
     cursor = conn.cursor()
