@@ -50,10 +50,11 @@ def respond():
     # json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 @app.route("/specalists", methods=["POST"])
-def responding(): 
+def specialists(): 
     conn = sqlite3.connect("MOCdb.db")
     cursor = conn.cursor()
-    sql_command = """INSERT INTO prospect_info (first, last, birthday, email, education, state, city, bio, contact, password, website_link, specialization, resume) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
+    sql_command = """INSERT INTO prospect_info (first, last, birthday, email, education, state, city, bio, contact, password, website_link, specialization, resume) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
 
     values = (request.get_json()["first"],
               request.get_json()["last"],
@@ -65,7 +66,7 @@ def responding():
               request.get_json()["bio"], 
               request.get_json()["contact"], 
               request.get_json()["password"], 
-              request.get_json["website_link"],
+              request.get_json()["website_link"],
               request.get_json()["specialization"],
               request.get_json()["resume"])
     print(values)
@@ -83,10 +84,11 @@ def responding():
 
 
 @app.route("/artists", methods=["POST"])
-def responding(): 
+def artists(): 
     conn = sqlite3.connect("MOCdb.db")
     cursor = conn.cursor()
-    sql_command = """INSERT INTO artist_producer (first, last, birthday, email, state, city, portfolio, contact, password, website_link, genre, profile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
+    sql_command = """INSERT INTO artist_producer (first, last, birthday, email, state, city, portfolio, contact, password, website_link, genre, profile)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
 
     values = (request.get_json()["first"],
               request.get_json()["last"],
@@ -103,8 +105,8 @@ def responding():
     print(values)
     cursor.execute(sql_command, values)
 
-    sql_command = """SELECT * FROM artist_producer WHERE first = ? AND last = ? AND specialization = ?"""
-    values1 = (request.get_json()["first"], request.get_json()["last"], request.get_json["specialization"])
+    sql_command = """SELECT * FROM artist_producer WHERE first = ? AND last = ? AND genre = ?"""
+    values1 = (request.get_json()["first"], request.get_json()["last"], request.get_json["genre"])
     cursor.execute(sql_command, values1)
 
     artist = cursor.fetchone() 
@@ -183,8 +185,8 @@ def searchProspect(prospect):
     return json.dumps(json_response)
 
 
-@app.route("/artist/<artist>", methods=["GET"])
-def searchProspect(artist):
+@app.route("/artist-account/<artist>", methods=["GET"])
+def searchArtists(artist):
     conn = sqlite3.connect("./MOCdb.db")
     cursor = conn.cursor()
     sql_command = """SELECT * FROM artist_producer WHERE artist LIKE ?;"""
