@@ -82,7 +82,7 @@ def responding():
     # json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 
-@app.route("/artist", methods=["POST"])
+@app.route("/artists", methods=["POST"])
 def responding(): 
     conn = sqlite3.connect("MOCdb.db")
     cursor = conn.cursor()
@@ -160,7 +160,7 @@ def search(business_name):
     print(f'found {len(json_response)} match{"" if len(json_response) == 1 else "es"} for "{business_name}"')
     return json.dumps(json_response)
   
-@app.route("/specalists/<prospect>", methods=["GET"])
+@app.route("/prospect/<prospect>", methods=["GET"])
 def searchProspect(prospect):
     conn = sqlite3.connect("./MOCdb.db")
     cursor = conn.cursor()
