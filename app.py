@@ -87,7 +87,7 @@ def specialists():
 def artists(): 
     conn = sqlite3.connect("MOCdb.db")
     cursor = conn.cursor()
-    sql_command = """INSERT INTO artist_producer (first, last, birthday, email, state, city, portfolio, contact, password, website_link, genre, profile)
+    sql_command = """INSERT INTO artist_producer (first, last, email, state, city, portfolio, contact, password, website_link, genre, profile)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
 
     values = (request.get_json()["first"],
