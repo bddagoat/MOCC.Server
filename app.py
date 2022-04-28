@@ -53,12 +53,11 @@ def respond():
 def specialists(): 
     conn = sqlite3.connect("MOCdb.db")
     cursor = conn.cursor()
-    sql_command = """INSERT INTO prospect_info (first, last, birthday, email, education, state, city, bio, contact, password, website_link, specialization, resume) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
+    sql_command = """INSERT INTO prospect_info (first, last, email, education, state, city, bio, contact, password, website_link, specialization, resume) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
 
     values = (request.get_json()["first"],
               request.get_json()["last"],
-              request.get_json()["birthday"],
               request.get_json()["email"], 
               request.get_json()["education"], 
               request.get_json()["state"], 
@@ -87,15 +86,14 @@ def specialists():
 def artists(): 
     conn = sqlite3.connect("MOCdb.db")
     cursor = conn.cursor()
-    sql_command = """INSERT INTO artist_producer (first, last, email, state, city, portfolio, contact, password, website_link, genre, profile)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
+    sql_command = """INSERT INTO artist_producer (first, last, email, state, city, contact, password, website_link, genre, profile)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
 
     values = (request.get_json()["first"],
               request.get_json()["last"],
               request.get_json()["email"], 
               request.get_json()["state"], 
-              request.get_json()["city"],  
-              request.get_json()["portfolio"], 
+              request.get_json()["city"],   
               request.get_json()["contact"], 
               request.get_json()["password"], 
               request.get_json()["website_link"],

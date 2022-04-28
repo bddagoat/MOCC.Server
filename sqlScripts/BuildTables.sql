@@ -51,7 +51,6 @@ CREATE TABLE "artist_producer" (
 	"id"	INTEGER,
 	"first"	TEXT,
 	"last"	TEXT,
-	"birthday"	TEXT,
 	"email"	TEXT,
 	"state"	TEXT,
 	"city"	TEXT,
@@ -61,7 +60,7 @@ CREATE TABLE "artist_producer" (
 	"website_link"	TEXT,
 	"portfolio"	TEXT,
 	"rating"	INTEGER,
-	"genre"	TEXT,
+	"genre"	INTEGER,
 	"profile"	TEXT,
-	PRIMARY KEY("first","last","genre")
+	PRIMARY KEY("first","last","rating","genre")
 );
