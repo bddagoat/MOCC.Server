@@ -92,7 +92,6 @@ def artists():
 
     values = (request.get_json()["first"],
               request.get_json()["last"],
-              request.get_json()["birthday"],
               request.get_json()["email"], 
               request.get_json()["state"], 
               request.get_json()["city"],  
