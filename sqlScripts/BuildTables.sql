@@ -64,3 +64,15 @@ CREATE TABLE "artist_producer" (
 	"profile"	TEXT,
 	PRIMARY KEY("first","last","rating","genre")
 );
+
+DROP TABLE IF EXISTS gallery_art;
+CREATE TABLE "gallery_art" (
+	"name"	TEXT,
+	"title"	TEXT,
+	"email"	TEXT,
+	"category"	TEXT,
+	"monetize"	TEXT,
+	"picture"	TEXT,
+	"description"	TEXT,
+	PRIMARY KEY("name","title","category")
+);

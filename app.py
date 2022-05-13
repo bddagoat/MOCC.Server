@@ -49,6 +49,33 @@ def respond():
     return json.dumps(business)
     # json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
+@app.route("/", method=["POST"])
+def art():
+    conn = sqlite3.connect("MOCdb.db")
+    cursor = conn.cursor()
+    sql_command = """INSERT INTO gallery_art (name, title, email, category, monetize, picture, description)
+    VALUES (?, ?, ?, ?, ?, ?, ?)"""
+    values = (request.get_json()["name"],
+              request.get_json()["title"],
+              request.get_json()["email"],
+              request.get_json()["category"],
+              request.get_json()["monetize"],
+              request.get_json()["picture"],
+              request.get_json()["description"])
+    print(values)
+    cursor.execute(sql_command, values)        
+
+    # conditional for category
+
+    sql_command = """SELECT * FROM gallery_info WHERE name = ? AND title = ? AND Category = ?"""
+    values1 = (request.get_json()["name"], request.get_json()["title"], request.get_json["category"])
+    cursor.execute(sql_command, values1)
+
+    art = cursor.fetchone() 
+    conn.commit()
+    conn.close()
+    return json.dumps(art)
+
 @app.route("/specalists", methods=["POST"])
 def specialists(): 
     conn = sqlite3.connect("MOCdb.db")
