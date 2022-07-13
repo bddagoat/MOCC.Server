@@ -1,4 +1,5 @@
 import re
+from unicodedata import category
 from flask import Flask, request
 # from flask import SQLAlchemy
 from flask import jsonify
@@ -112,32 +113,60 @@ def artists():
     return json.dumps(artist)
 
 
-@app.route("/post", method=["POST"])
-def art():
-    conn = sqlite3.connect("MOCdb.db")
+@app.route("/art", methods=["POST"])
+def media():
+    conn = sqlite3.connect("MOC.db")
     cursor = conn.cursor()
-    sql_command = """INSERT INTO gallery_art (name, title, email, category, monetize, picture, description)
-    VALUES (?, ?, ?, ?, ?, ?, ?)"""
+    sql_command = """INSERT INTO art_media (name, title, email, category, file, monetize, description) VALUES (?, ?, ?, ?, ?, ?, ?);"""
+
     values = (request.get_json()["name"],
               request.get_json()["title"],
               request.get_json()["email"],
               request.get_json()["category"],
-              request.get_json()["monetize"],
-              request.get_json()["picture"],
+              request.get_json()["file"],
+              request.get_json()["montize"],
               request.get_json()["description"])
     print(values)
-    cursor.execute(sql_command, values)        
+    cursor.execute(sql_command, values)
 
-    # conditional for category
-
-    sql_command = """SELECT * FROM gallery_info WHERE name = ? AND title = ? AND Category = ?"""
-    values1 = (request.get_json()["name"], request.get_json()["title"], request.get_json["category"])
+    sql_command = """SELECT * FROM art_media WHERE name = ? AND category = ? AND monetize = ?"""
+    values1 = (request.get_json()["name"], request.get_json()["category"], request.get_json()["monetize"])
     cursor.execute(sql_command, values1)
 
-    art = cursor.fetchone() 
+    media = cursor.fetchone()
     conn.commit()
     conn.close()
-    return json.dumps(art)
+    return json.dumps(media)
+
+
+# Posts will be received by the post page and inserted into the gallery_art table to create a db of account posts
+
+# @app.route("/post", method=["POST"])
+# def art():
+#     conn = sqlite3.connect("MOCdb.db")
+#     cursor = conn.cursor()
+#     sql_command = """INSERT INTO gallery_art (name, title, email, category, monetize, picture, description)
+#     VALUES (?, ?, ?, ?, ?, ?, ?)"""
+#     values = (request.get_json()["name"],
+#               request.get_json()["title"],
+#               request.get_json()["email"],
+#               request.get_json()["category"],
+#               request.get_json()["monetize"],
+#               request.get_json()["picture"],
+#               request.get_json()["description"])
+#     print(values)
+#     cursor.execute(sql_command, values)        
+
+#     # conditional for category
+
+#     sql_command = """SELECT * FROM gallery_info WHERE name = ? AND title = ? AND Category = ?"""
+#     values1 = (request.get_json()["name"], request.get_json()["title"], request.get_json["category"])
+#     cursor.execute(sql_command, values1)
+
+#     art = cursor.fetchone() 
+#     conn.commit()
+#     conn.close()
+#     return json.dumps(art)
 
 
 # init SQLAlchemy so we can use it later in our models
@@ -187,30 +216,33 @@ def search(business_name):
     print(f'found {len(json_response)} match{"" if len(json_response) == 1 else "es"} for "{business_name}"')
     return json.dumps(json_response)
 
+# Conditional for submit page where posts will be uploaded to home and submit page and categorized
 
-@app.route("/submit/<post>", method=["GET"])
-def art(post):
-    conn = sqlite3.connect("MOCdb.db")
-    cursor = conn.cursor()
-    sql_command = """SELECT * FROM gallery_art WHERE name LIKE ? AND title LIKE ? AND category LIKE ?;"""
-    values = (f'%{str(post)}%',)
-    cursor.execute(sql_command, values)        
+# @app.route("/submit/<post>", method=["GET"])
+# def art(post):
+#     conn = sqlite3.connect("MOCdb.db")
+#     cursor = conn.cursor()
+#     sql_command = """SELECT * FROM gallery_art WHERE name LIKE ? AND title LIKE ? AND category LIKE ?;"""
+#     values = (f'%{str(post)}%',)
+#     cursor.execute(sql_command, values)        
 
-    # conditional for category
+#     conditional for category
 
-    row_headers = [x[0] for x in cursor.description] # Get all the column names in the db
+#     if category == "art" in gallery_art:
 
-    results = cursor.fetchall()
+#     row_headers = [x[0] for x in cursor.description] # Get all the column names in the db
 
-    json_response = []
+#     results = cursor.fetchall()
 
-    for row in results:
-        json_response.append(dict(zip(row_headers, row))) # Create dictionaries combining row_headers with real data
+#     json_response = []
 
-    conn.commit()
-    conn.close()
-    print(f'found {len(json_response)} match{"" if len(json_response) == 1 else "es"} for "{post}"')
-    return json.dumps(json_response)
+#     for row in results:
+#         json_response.append(dict(zip(row_headers, row))) # Create dictionaries combining row_headers with real data
+
+#     conn.commit()
+#     conn.close()
+#     print(f'found {len(json_response)} match{"" if len(json_response) == 1 else "es"} for "{post}"')
+#     return json.dumps(json_response)
 
 
   
@@ -245,7 +277,7 @@ def searchArtists(artist):
     value = (f'%{str(artist)}%',)
 
     cursor.execute(sql_command, value)
-    row_headers =  [x[0] for x in cursor.description] 
+    row_headers = [x[0] for x in cursor.description] 
 
     results = cursor.fetchall()
 

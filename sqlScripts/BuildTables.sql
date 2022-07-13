@@ -76,3 +76,14 @@ CREATE TABLE "gallery_art" (
 	"description"	TEXT,
 	PRIMARY KEY("name","title","category")
 );
+
+DROP TABLE IF EXISTS art_media;
+CREATE TABLE "art_media" (
+	"name"	TEXT,
+	"title"	TEXT,
+	"category"	TEXT,
+	"monetize"	TEXT,
+	"file"	TEXT,
+	"description"	TEXT,
+	PRIMARY KEY("name","category","monetize")
+);
